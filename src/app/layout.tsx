@@ -1,13 +1,8 @@
 import type { Metadata } from "next";
 
-import "./globals.css";
+import "./global.css";
 import {
-  ClerkProvider,
-  SignInButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
-  SignIn
+  ClerkProvider
 }from '@clerk/nextjs';
 
 
@@ -27,7 +22,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
              
-              <UserButton />
+              
               {children}
             
        </body>
