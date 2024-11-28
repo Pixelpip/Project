@@ -1,20 +1,27 @@
 import type { Config } from "tailwindcss";
 import flowbite from "flowbite-react/tailwind";
 const config: Config = {
-  content: [
+    darkMode: ["class"],
+    content: [
     "./src/**/*.{js,ts,jsx,tsx,mdx}",
     flowbite.content(),
   ],
   theme: {
-    extend: {
-      colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
-      },
-    },
+  	extend: {
+  		colors: {
+  			background: 'var(--background)',
+  			foreground: 'var(--foreground)'
+  		},
+  		borderRadius: {
+  			lg: 'var(--radius)',
+  			md: 'calc(var(--radius) - 2px)',
+  			sm: 'calc(var(--radius) - 4px)'
+  		}
+  	}
   },
   plugins: [
     flowbite.plugin(),
-  ],
+      require("tailwindcss-animate")
+],
 };
 export default config;

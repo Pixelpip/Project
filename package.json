@@ -11,14 +11,21 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^6.2.0",
+    "@radix-ui/react-avatar": "^1.1.1",
+    "@radix-ui/react-slot": "^1.1.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "cors": "^2.8.5",
     "flowbite-react": "^0.10.2",
+    "lucide-react": "^0.462.0",
     "mongodb": "^6.11.0",
     "next": "14.2.16",
     "react": "^18",
     "react-dom": "^18",
     "socket.io": "^4.8.1",
-    "socket.io-client": "^4.8.1"
+    "socket.io-client": "^4.8.1",
+    "tailwind-merge": "^2.5.5",
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
     "@types/node": "^20",
