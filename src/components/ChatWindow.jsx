@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import { AiOutlineSend } from "react-icons/ai";
-import { socket } from "../socket"; // Import the socket client
+import { socket } from "../socket"; 
+import { uniqueNamesGenerator, Config, adjectives, colors, animals } from 'unique-names-generator';
 
 const ChatWindow = () => {
   const [messages, setMessages] = useState([]);
@@ -12,6 +13,7 @@ const ChatWindow = () => {
   useEffect(() => {
     socket.on("chatMessage", (msg) => {
       setMessages((prevMessages) => [...prevMessages, msg]);
+
     });
 
     // Cleanup socket event listeners on unmount
@@ -30,15 +32,15 @@ const ChatWindow = () => {
     // Emit the message to the server via socket
     socket.emit("chatMessage", messageDetail);
 
-    // Add message to local state for immediate display
+    // Add message to local for display
     setMessages((prevMessages) => [...prevMessages, messageDetail]);
   };
 
-  // Handle the 'Enter' key press for sending a message
+  // using enter key to send message
   const handleKeyup = (event) => {
     if (event.key === "Enter" && messageInput.trim() !== "") {
       sendMessage(messageInput);
-      setMessageInput(""); // Clear the input after sending
+      setMessageInput(""); // Clearing input after sending message
     }
   };
 
@@ -52,10 +54,10 @@ const ChatWindow = () => {
       <div className="bg-white p-4 border-b flex justify-between items-center">
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
-            {/* Replace with actual user info if needed */}
+           
           </div>
           <div>
-            <div className="font-semibold">User</div> {/* Replace with dynamic user name if required */}
+            <div className="font-semibold">User</div>
             <div className="text-sm text-green-500">Active Now</div>
           </div>
         </div>
