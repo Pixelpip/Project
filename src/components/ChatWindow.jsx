@@ -2,115 +2,118 @@
 
 import React, { useState, useEffect } from "react";
 import { AiOutlineSend } from "react-icons/ai";
+import { FaPaperclip } from "react-icons/fa6";
 import { socket } from "../socket"; 
-import { uniqueNamesGenerator, Config, adjectives, colors, animals } from 'unique-names-generator';
+
+
+
 
 const ChatWindow = () => {
-  const [messages, setMessages] = useState([]);
-  const [messageInput, setMessageInput] = useState("");
-
-  // Listen for incoming messages
-  useEffect(() => {
-    socket.on("chatMessage", (msg) => {
-      setMessages((prevMessages) => [...prevMessages, msg]);
-
-    });
-
-    // Cleanup socket event listeners on unmount
-    return () => {
-      socket.off("chatMessage");
-    };
-  }, []);
-
-  // Send message function
-  const sendMessage = (msg) => {
-    const messageDetail = {
-      user: socket.id,  // Use socket.id to identify the user sending the message
-      msg: msg,
-    };
-
-    // Emit the message to the server via socket
-    socket.emit("chatMessage", messageDetail);
-
-    // Add message to local for display
-    setMessages((prevMessages) => [...prevMessages, messageDetail]);
-  };
-
-  // using enter key to send message
-  const handleKeyup = (event) => {
-    if (event.key === "Enter" && messageInput.trim() !== "") {
-      sendMessage(messageInput);
-      setMessageInput(""); // Clearing input after sending message
-    }
-  };
-
-  // Handle the input change
-  const handleInputChange = (event) => {
-    setMessageInput(event.target.value);
-  };
-
   return (
     <div className="flex-1 flex flex-col">
-      <div className="bg-white p-4 border-b flex justify-between items-center">
-        <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
-           
-          </div>
-          <div>
-            <div className="font-semibold">User</div>
-            <div className="text-sm text-green-500">Active Now</div>
-          </div>
+    <div className="bg-white p-4 border-b flex justify-between items-center">
+      <div className="flex items-center space-x-3">
+        <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
+          <div className="text-gray-500" size={20} />
+        </div>
+        <div>
+          <div className="font-semibold">currentRoom.name</div>
+          <div className="text-sm text-green-500">Active Now</div>
         </div>
       </div>
-
-      <div className="flex flex-col h-screen bg-gray-50">
-        {/* Chat Area */}
-        <div className="flex-1 overflow-y-auto bg-gray-50 p-4 space-y-4" onKeyUp={handleKeyup}>
-          {/* Welcome message */}
-          <div className="flex justify-center">
-            <div className="bg-gray-200 rounded-lg px-4 py-2 text-sm text-gray-600">
-              Welcome!
-            </div>
-          </div>
-
-          {/* Messages */}
-          <div className="message_area space-y-4 overflow-y-auto">
-            {/* Messages */}
-            {messages.map((message, index) => (
-              <div key={index} className={`message ${message.user === socket.id ? "outgoing" : "incoming"} flex items-end space-x-3 ${message.user === socket.id ? "justify-end" : ""}`}>
-                <div className={`p-3 rounded-lg shadow-md max-w-xs ${message.user === socket.id ? "bg-green-100" : "bg-blue-100"}`}>
-                  <h4 className={`font-semibold ${message.user === socket.id ? "text-green-600 text-right" : "text-blue-600"}`}>
-                    {message.user}
-                  </h4>
-                  <p className="text-gray-700">{message.msg}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Input Area */}
-          <div className="flex items-center p-4">
-            <input
-              type="text"
-              className="flex-1 p-2 border rounded-lg"
-              placeholder="Type your message..."
-              value={messageInput}
-              onChange={handleInputChange}
-            />
-            <button
-              className="ml-2 p-2 bg-green-500 text-white rounded-full"
-              onClick={() => {
-                sendMessage(messageInput);
-                setMessageInput(""); // Clear input after sending
-              }}
-            >
-              <AiOutlineSend size={24} />
-            </button>
-          </div>
-        </div>
+      <div className="flex items-center space-x-4">
+        
       </div>
     </div>
-  );
-};
 
-export default ChatWindow;
+    <div className="flex-1 overflow-y-auto bg-gray-50 p-4">
+      <div className="space-y-4">
+        <div className="flex justify-center">
+          <div className="bg-white rounded-lg px-4 py-2 text-sm text-gray-500">
+            Welcome to currentRoom.name!
+          </div>
+        </div>
+        {/* {messages.map((msg) => (
+          <div key={msg.id} className={`flex ${msg.sender === 'me' ? 'justify-end' : 'justify-start'}`}>
+            <div className={`max-w-[70%] rounded-lg p-3 ${msg.sender === 'me' ? 'bg-blue-500 text-white' : 'bg-white'}`}>
+              {renderMessage(msg)}
+              <div className={`text-xs mt-1 ${msg.sender === 'me' ? 'text-blue-100' : 'text-gray-500'}`}>
+                {username} • {msg.time}
+              </div>
+            </div>
+          </div>
+        ))} */}
+      </div>
+    </div>
+
+    <div className="bg-white p-4 border-t">
+      <form /*onSubmit={handleSend}*/ className="flex items-center space-x-4">
+        <div className="relative">
+          <button
+            type="button"
+            onClick={() => setShowFileMenu(!showFileMenu)}
+            className="text-gray-500 hover:text-gray-700 focus:outline-none"
+          >
+            <FaPaperclip size={20} />
+          </button>
+          
+          {/* File Upload Menu 
+          {showFileMenu && (
+            <div className="absolute bottom-full left-0 mb-2 bg-white rounded-lg shadow-lg border p-2 w-48">
+              <input
+                type="file"
+                ref={imageInputRef}
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => handleFileUpload(e, 'image')}
+              />
+              <input
+                type="file"
+                ref={fileInputRef}
+                className="hidden"
+                onChange={(e) => handleFileUpload(e, 'file')}
+              />
+              <button
+                type="button"
+                onClick={() => imageInputRef.current?.click()}
+                className="flex items-center space-x-2 w-full p-2 hover:bg-gray-100 rounded"
+              >
+                <Image size={16} />
+                <span>Upload Image</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="flex items-center space-x-2 w-full p-2 hover:bg-gray-100 rounded"
+              >
+                <File size={16} />
+                <span>Upload File</span>
+              </button>
+            </div>
+          )} */}
+        </div>
+        
+        <input
+          type="text"
+          /*value={message}*/
+          onChange={(e) => setMessage(e.target.value)}
+          placeholder="Type a message"
+          className="flex-1 border rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500"
+        />
+        <button
+          type="submit"
+          className="bg-blue-500 text-white rounded-lg p-2 hover:bg-blue-600 focus:outline-none"
+        >
+          <AiOutlineSend/>
+        </button>
+
+      </form>
+    </div>
+  </div>
+  )
+}
+
+export default ChatWindow
+
+
+
