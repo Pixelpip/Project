@@ -3,9 +3,12 @@
 import React, { useState, useEffect } from "react";
 import { AiOutlineSend } from "react-icons/ai";
 import { socket } from "../socket"; 
-import { uniqueNamesGenerator, Config, adjectives, colors, animals } from 'unique-names-generator';
+import { useUser } from "@clerk/clerk-react";
+import { useRouter } from 'next/compat/router'
 
 const ChatWindow = () => {
+  const path=useRouter();
+  const { user } = useUser(); // Get the current user
   const [messages, setMessages] = useState([]);
   const [messageInput, setMessageInput] = useState("");
 
@@ -13,8 +16,9 @@ const ChatWindow = () => {
   useEffect(() => {
     socket.on("chatMessage", (msg) => {
       setMessages((prevMessages) => [...prevMessages, msg]);
-
     });
+
+    
 
     // Cleanup socket event listeners on unmount
     return () => {
@@ -24,27 +28,30 @@ const ChatWindow = () => {
 
   // Send message function
   const sendMessage = (msg) => {
+    if (!user) return; // Ensure user is logged in
+
     const messageDetail = {
-      user: socket.id,  // Use socket.id to identify the user sending the message
+      userId: user.id, // Use the current user's unique ID
+      userName: user.fullName, // Use the current user's full name
       msg: msg,
     };
 
     // Emit the message to the server via socket
     socket.emit("chatMessage", messageDetail);
 
-    // Add message to local for display
+    // Add message to local messages array for display
     setMessages((prevMessages) => [...prevMessages, messageDetail]);
   };
 
-  // using enter key to send message
+  // Handle key press (Enter) to send message
   const handleKeyup = (event) => {
     if (event.key === "Enter" && messageInput.trim() !== "") {
       sendMessage(messageInput);
-      setMessageInput(""); // Clearing input after sending message
+      setMessageInput(""); // Clear input after sending message
     }
   };
 
-  // Handle the input change
+  // Handle input change
   const handleInputChange = (event) => {
     setMessageInput(event.target.value);
   };
@@ -53,11 +60,9 @@ const ChatWindow = () => {
     <div className="flex-1 flex flex-col">
       <div className="bg-white p-4 border-b flex justify-between items-center">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
-           
-          </div>
+          <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center"></div>
           <div>
-            <div className="font-semibold">User</div>
+            <div className="font-semibold">{`fix this `}</div>
             <div className="text-sm text-green-500">Active Now</div>
           </div>
         </div>
@@ -65,7 +70,10 @@ const ChatWindow = () => {
 
       <div className="flex flex-col h-screen bg-gray-50">
         {/* Chat Area */}
-        <div className="flex-1 overflow-y-auto bg-gray-50 p-4 space-y-4" onKeyUp={handleKeyup}>
+        <div
+          className="flex-1 overflow-y-auto bg-gray-50 p-4 space-y-4"
+          onKeyUp={handleKeyup}
+        >
           {/* Welcome message */}
           <div className="flex justify-center">
             <div className="bg-gray-200 rounded-lg px-4 py-2 text-sm text-gray-600">
@@ -75,17 +83,35 @@ const ChatWindow = () => {
 
           {/* Messages */}
           <div className="message_area space-y-4 overflow-y-auto">
-            {/* Messages */}
-            {messages.map((message, index) => (
-              <div key={index} className={`message ${message.user === socket.id ? "outgoing" : "incoming"} flex items-end space-x-3 ${message.user === socket.id ? "justify-end" : ""}`}>
-                <div className={`p-3 rounded-lg shadow-md max-w-xs ${message.user === socket.id ? "bg-green-100" : "bg-blue-100"}`}>
-                  <h4 className={`font-semibold ${message.user === socket.id ? "text-green-600 text-right" : "text-blue-600"}`}>
-                    {message.user}
-                  </h4>
-                  <p className="text-gray-700">{message.msg}</p>
+            {messages.map((message, index) => {
+              const isCurrentUser = message.userId === user?.id;
+
+              return (
+                <div
+                  key={index}
+                  className={`message ${
+                    isCurrentUser ? "outgoing" : "incoming"
+                  } flex items-end space-x-3 ${
+                    isCurrentUser ? "justify-end" : ""
+                  }`}
+                >
+                  <div
+                    className={`p-3 rounded-lg shadow-md max-w-xs ${
+                      isCurrentUser ? "bg-green-100" : "bg-blue-100"
+                    }`}
+                  >
+                    <h4
+                      className={`font-semibold ${
+                        isCurrentUser ? "text-green-600 text-right" : "text-blue-600"
+                      }`}
+                    >
+                      {message.userName}
+                    </h4>
+                    <p className="text-gray-700">{message.msg}</p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           {/* Input Area */}
