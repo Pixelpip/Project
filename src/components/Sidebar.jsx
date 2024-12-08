@@ -9,7 +9,7 @@ const Sidebar = () => {
   const navigateTo = (path) => {
     router.push(path);
   };
-
+ 
   return (
     <div className="flex h-screen bg-gray-100">
       {/* Sidebar */}
@@ -38,7 +38,7 @@ const Sidebar = () => {
 
         {/* Footer */}
         <div className="p-4 border-t text-gray-500 text-sm text-center">
-          © 2024 Chat App
+    
         </div>
       </div>
     </div>
