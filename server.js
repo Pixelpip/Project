@@ -8,6 +8,7 @@ const port = 3000;
 
 const app = next({ dev, hostname, port });
 const handler = app.getRequestHandler();
+const rooms=["tech","general"]
 
 app.prepare().then(() => {
   const httpServer = createServer(handler);
@@ -15,12 +16,15 @@ app.prepare().then(() => {
   const io = new Server(httpServer);
 
   io.on("connection", (socket) => {
-    console.log("A client connected");
-
-    socket.on("chatMessage", (msg) => {
-      console.log("Received message:", msg);
-      // Broadcast to all clients
-      socket.broadcast.emit("chatMessage", msg);
+    console.log(`A client connected with socket id:${socket.id}`);
+    socket.on('joinroom',(msg)=>{
+          if(rooms.includes(msg.path)){
+            socket.join(msg.path);
+            socket.on("chatMessage", (msg) => {
+              console.log("Received message:", msg);
+              // Broadcast to all clients
+              io.to(msg.path).emit(msg);
+          })}
     });
 
     socket.on("disconnect", () => {

@@ -4,10 +4,10 @@ import React, { useState, useEffect } from "react";
 import { AiOutlineSend } from "react-icons/ai";
 import { socket } from "../socket"; 
 import { useUser } from "@clerk/clerk-react";
-import { useRouter } from 'next/compat/router'
+import { usePathname } from 'next/navigation';
 
 const ChatWindow = () => {
-  const path=useRouter();
+  const path=usePathname();
   const { user } = useUser(); // Get the current user
   const [messages, setMessages] = useState([]);
   const [messageInput, setMessageInput] = useState("");
@@ -34,6 +34,7 @@ const ChatWindow = () => {
       userId: user.id, // Use the current user's unique ID
       userName: user.fullName, // Use the current user's full name
       msg: msg,
+      path:path
     };
 
     // Emit the message to the server via socket
