@@ -22,7 +22,6 @@ app.prepare().then(() => {
             socket.join(msg.path);
             socket.on("chatMessage", (msg) => {
               console.log("Received message:", msg);
-              // Broadcast to all clients
               io.to(msg.path).emit(msg);
           })}
     });

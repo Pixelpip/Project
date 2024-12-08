@@ -12,6 +12,7 @@ const ChatWindow = () => {
   const [messages, setMessages] = useState([]);
   const [messageInput, setMessageInput] = useState("");
 
+  
   // Listen for incoming messages
   useEffect(() => {
     socket.on("chatMessage", (msg) => {
@@ -63,7 +64,7 @@ const ChatWindow = () => {
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center"></div>
           <div>
-            <div className="font-semibold">{`fix this `}</div>
+            <div className="font-semibold">{`${path}`}</div>
             <div className="text-sm text-green-500">Active Now</div>
           </div>
         </div>
