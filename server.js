@@ -21,6 +21,7 @@ app.prepare().then(() => {
       console.log("Received message:", msg);
       // Broadcast to all clients
       socket.broadcast.emit("chatMessage", msg);
+      console.log(msg);
     });
 
     socket.on("disconnect", () => {
