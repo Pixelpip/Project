@@ -28,7 +28,6 @@ const ChatWindow = () => {
     if (!user) return; // Ensure user is logged in
 
     const messageDetail = {
-      userId: user.id, // Send the user ID from Clerk
       userName: user.fullName || "Anonymous", // Use Clerk's full name or fallback to Anonymous
       msg: msg,
       path: path,
@@ -41,6 +40,7 @@ const ChatWindow = () => {
     setMessages((prevMessages) => [...prevMessages, messageDetail]);
   };
 
+  // Handle the 'Enter' key press for sending a message
   const handleKeyup = (event) => {
     if (event.key === "Enter" && messageInput.trim() !== "") {
       sendMessage(messageInput);
@@ -56,7 +56,9 @@ const ChatWindow = () => {
     <div className="flex-1 flex flex-col">
       <div className="bg-white p-4 border-b flex justify-between items-center">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center"></div>
+          <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
+            {/* Replace with actual user info if needed */}
+          </div>
           <div>
             <div className="font-semibold">{user ? user.fullName : "User"}</div> {/* Use Clerk's full name */}
             <div className="text-sm text-green-500">Active Now</div>
@@ -67,12 +69,19 @@ const ChatWindow = () => {
       <div className="flex flex-col h-screen bg-gray-50">
         {/* Chat Area */}
         <div className="flex-1 overflow-y-auto bg-gray-50 p-4 space-y-4" onKeyUp={handleKeyup}>
+          {/* Welcome message */}
+          <div className="flex justify-center">
+            <div className="bg-gray-200 rounded-lg px-4 py-2 text-sm text-gray-600">
+              Welcome!
+            </div>
+          </div>
+
           {/* Messages */}
           <div className="message_area space-y-4 overflow-y-auto">
             {messages.map((message, index) => (
-              <div key={index} className={`message ${message.userId === user?.id ? "outgoing" : "incoming"} flex items-end space-x-3 ${message.userId === user?.id ? "justify-end" : ""}`}>
-                <div className={`p-3 rounded-lg shadow-md max-w-xs ${message.userId === user?.id ? "bg-green-100" : "bg-blue-100"}`}>
-                  <h4 className={`font-semibold ${message.userId === user?.id ? "text-green-600 text-right" : "text-blue-600"}`}>
+              <div key={index} className={`message ${message.userName === user?.fullName ? "outgoing" : "incoming"} flex items-end space-x-3 ${message.userName === user?.fullName ? "justify-end" : ""}`}>
+                <div className={`p-3 rounded-lg shadow-md max-w-xs ${message.userName === user?.fullName ? "bg-green-100" : "bg-blue-100"}`}>
+                  <h4 className={`font-semibold ${message.userName === user?.fullName ? "text-green-600 text-right" : "text-blue-600"}`}>
                     {message.userName}
                   </h4>
                   <p className="text-gray-700">{message.msg}</p>

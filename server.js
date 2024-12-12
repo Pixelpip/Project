@@ -21,10 +21,7 @@ app.prepare().then(() => {
     socket.on("chatMessage", (msg) => {
       console.log("Received message:", msg);
       // Broadcast to all clients
-      if(room.includes(msg.path)){
-        io.to(msg.path).emit(msg.msg);
-      }
-      
+      socket.broadcast.emit("chatMessage", msg);
     });
 
     socket.on("disconnect", () => {
