@@ -8,6 +8,7 @@ const port = 3000;
 
 const app = next({ dev, hostname, port });
 const handler = app.getRequestHandler();
+const room=["/tech","/casual"]
 
 app.prepare().then(() => {
   const httpServer = createServer(handler);
@@ -20,8 +21,10 @@ app.prepare().then(() => {
     socket.on("chatMessage", (msg) => {
       console.log("Received message:", msg);
       // Broadcast to all clients
-      socket.broadcast.emit("chatMessage", msg);
-      console.log(msg);
+      if(room.includes(msg.path)){
+        io.to(msg.path).emit(msg.msg);
+      }
+      
     });
 
     socket.on("disconnect", () => {
