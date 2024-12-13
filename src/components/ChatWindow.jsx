@@ -15,8 +15,9 @@ const ChatWindow = () => {
   // Listen for incoming messages
   useEffect(() => {
     socket.on("chatMessage", (msg) => {
+      if(msg.path==path){
       setMessages((prevMessages) => [...prevMessages, msg]);
-    });
+    }});
 
     return () => {
       socket.off("chatMessage"); // Cleanup on unmount
